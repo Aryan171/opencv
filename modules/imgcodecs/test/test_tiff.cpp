@@ -1334,6 +1334,20 @@ const int Imgcodecs_Tiff_32F_Compressions_32F_All_Values[] =
 
 INSTANTIATE_TEST_CASE_P(compressions_32F, Imgcodecs_Tiff_32F_Compressions_32F, testing::ValuesIn(Imgcodecs_Tiff_32F_Compressions_32F_All_Values));
 
+TEST(Imgcodecs_Tiff, Decode16UC4_UBSan_Fix)
+{
+    cv::Mat img(1, 1, CV_MAKETYPE(CV_16U, 4), cv::Scalar(0, 0, 0, 0));
+    std::vector<cv::Mat> pages = {img};
+    std::vector<uint8_t> enc;
+    
+    ASSERT_TRUE(cv::imencodemulti(".tiff", pages, enc));
+    
+    std::vector<cv::Mat> decoded;
+    cv::Mat buf(1, (int)enc.size(), CV_8U, enc.data());
+    EXPECT_NO_THROW(cv::imdecodemulti(buf, cv::IMREAD_UNCHANGED, decoded));
+    ASSERT_EQ(decoded.size(), 1u);
+}
+
 #endif
 
 }} // namespace

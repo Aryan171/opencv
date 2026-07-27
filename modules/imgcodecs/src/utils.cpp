@@ -252,8 +252,10 @@ void icvCvt_BGRA2RGBA_16u_C4R( const ushort* bgra, int bgra_step,
          rgba[0] = t2; rgba[1] = t1;
          rgba[2] = t0; rgba[3] = t3;
      }
-     bgra += bgra_step/sizeof(bgra[0]) - size.width*4;
-     rgba += rgba_step/sizeof(rgba[0]) - size.width*4;
+    if (bgra_step != 0)
+        bgra += bgra_step/sizeof(bgra[0]) - size.width*4;
+    if (rgba_step != 0)
+        rgba += rgba_step/sizeof(rgba[0]) - size.width*4;
  }
 }
 
